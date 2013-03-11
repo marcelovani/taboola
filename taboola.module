@@ -1,0 +1,212 @@
+<?php
+/**
+ * Implements hook_permission().
+ */
+function taboola_permission() {
+  return array(
+    'administer taboola' => array(
+      'title' => t('Administer Taboola'),
+      'description' => t('Administer account settings and visibility of Taboola on your site.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function taboola_menu() {
+  $items['admin/config/system/taboola'] = array(
+    'title' => 'Taboola',
+    'description' => 'Configure Taboola blocks on your website.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('taboola_admin_settings_form'),
+    'access arguments' => array('administer taboola'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'taboola.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_help().
+ */
+function taboola_help($path, $arg) {
+  switch ($path) {
+    case 'admin/config/system/taboola':
+      return t('<a href="@url">Taboola</a> is an analytics tool that provides links to other content either internally or from external sites.', array('@url' => 'http://www.taboola.com/'));
+  }
+}
+
+/**
+ * Implements hook_block_info().
+ * Used to create 2 blocks - one for internal, one for external.
+ */
+function taboola_block_info() {
+  $blocks['taboola_internal'] = array(
+    'info' => t('Taboola Internal'),
+    'cache' => DRUPAL_CACHE_PER_PAGE,
+  );
+
+  $blocks['taboola_external'] = array(
+    'info' => t('Taboola External'),
+    'cache' => DRUPAL_CACHE_PER_PAGE,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_page_alter().
+ */
+function taboola_page_alter(&$page) {
+  // Add footer JS.
+  if (taboola_get_setting('taboola_enabled') && $service_path = taboola_get_setting('taboola_service_path')) {
+    // Add inline JS.
+    $js = array(
+      "window._taboola = window._taboola || [];",
+      "_taboola.push({article:'auto'});",
+    );
+    drupal_add_js(implode(PHP_EOL, $js), array('scope' => 'footer', 'type' => 'inline'));
+    // Add external service URL.
+    drupal_add_js($service_path, array('scope' => 'footer', 'type' => 'external'));
+  }
+}
+
+/**
+ * Implements hook_block_view().
+ * Used to create the content for the internal/external ad blocks.
+ * Uses variables set in the admin form.
+ */
+function taboola_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'taboola_internal':
+      $block = taboola_get_block_array($block, 'internal');
+      break;
+
+    case 'taboola_external':
+      $block = taboola_get_block_array($block, 'external');
+      break;
+
+    default:
+      break;
+  }
+
+  return $block;
+}
+
+/**
+ * Create taboola block array.
+ */
+function taboola_get_block_array($block = array(), $type = 'internal') {
+  // Get the block subject.
+  $block_subject = taboola_get_setting('taboola_block_subject_' . $type);
+  // Create block subject and content.
+  $block['subject'] = t($block_subject);
+  if (taboola_get_setting('taboola_enabled')) {
+    $block['content'] = array(
+      '#attached' => array(
+        'js' => taboola_get_attached_js($type),
+      ),
+      '#markup' => taboola_get_widget_markup($type),
+    );
+  }
+  else {
+    $block['content'] = '';
+  }
+  return $block;
+}
+
+/**
+ * Get the div HTML that the widget will be placed in.
+ * 
+ * @param $type
+ */
+function taboola_get_widget_markup($type) {
+  // Return the widget markup.
+  return '<div class="taboola taboola-' . $type . '" id="' . taboola_get_widget_id($type) . '"></div>';
+}
+
+/**
+ * Get the widget HTML id.
+ * 
+ * @param $type
+ */
+function taboola_get_widget_id($type) {
+  return 'taboola-widget-' . $type;
+}
+
+/**
+ * Returns attached JS array
+ */
+function taboola_get_attached_js($type = 'internal') {
+  // Create JS.
+  $js = array();
+  $js[] = "window._taboola = window._taboola || [];";
+  $js[] = taboola_get_widget_setting_js($type);
+  return array(
+    array(
+      'data' => implode(PHP_EOL, $js),
+      'type' => 'inline',
+    )
+  );
+}
+
+/**
+ * Get widget setting JS.
+ * 
+ * @param $widget_type
+ */
+function taboola_get_widget_setting_js($type, $container = '') {
+  // Get Taboola JS settings for this type.
+  $mode = taboola_get_setting('taboola_mode_' . $type);
+  $placement = taboola_get_setting('taboola_placement_' . $type);
+  $container = empty($container) ? taboola_get_widget_id($type) : $container;
+  // Return setting JS.
+  return "_taboola.push({mode:'" . $mode . "', container:'" . $container . "', placement:'" . $placement . "'});";
+}
+
+/**
+ * Get a Taboola setting.
+ * 
+ * @param $key
+ */
+function taboola_get_setting($key = '', $default = null) {
+  // Use supplied $default if specified.
+  if ($default === null) {
+    $default = _taboola_get_default_setting($key);
+  }
+  // Attempt a variable_get and fallback on a default value.
+  return variable_get($key, $default);
+}
+
+/**
+ * Get a default setting.
+ * 
+ * @param $key
+ */
+function _taboola_get_default_setting($key = '') {
+  // Default Taboola settings are defined here.
+  $default_settings = array(
+    'taboola_enabled' => FALSE,
+    'taboola_placement_external' => 'bottom-main-column-external',
+    'taboola_placement_internal' => 'bottom-main-column',
+    'taboola_mode_external' => 'autosized-generated-2r-external',
+    'taboola_mode_internal' => 'autosized-generated-2r',
+  );
+  // Return default setting if specified.
+  if (isset($default_settings[$key])) {
+    return $default_settings[$key];
+  }
+  // Return empty string by default.
+  return '';
+}
+
+/**
+ * Return array of widget types.
+ */
+function taboola_get_widget_types() {
+  return array('internal', 'external');
+}

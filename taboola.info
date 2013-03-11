@@ -1,1 +1,4 @@
-name = Taboola
+core = "7.x"
+description = "Blocks for Taboola ads"
+name = "Taboola"
+configure = admin/config/system/taboola
