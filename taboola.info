@@ -2,3 +2,10 @@ core = "7.x"
 description = "Blocks for Taboola ads"
 name = "Taboola"
 configure = admin/config/system/taboola
+
+
+; Information added by drush on 2013-03-12
+version = "b254c60baada73dce3892b7c77af3d3f8d8afaa8"
+project = "taboola"
+datestamp = "1363093420"
+

@@ -67,9 +67,9 @@ function taboola_page_alter(&$page) {
       "window._taboola = window._taboola || [];",
       "_taboola.push({article:'auto'});",
     );
-    drupal_add_js(implode(PHP_EOL, $js), array('scope' => 'footer', 'type' => 'inline'));
+    drupal_add_js(implode(PHP_EOL, $js), array('scope' => 'footer', 'type' => 'inline', 'weight' => 5));
     // Add external service URL.
-    drupal_add_js($service_path, array('scope' => 'footer', 'type' => 'external'));
+    drupal_add_js($service_path, array('scope' => 'footer', 'type' => 'external', 'weight' => 10));
   }
 }
 
@@ -150,6 +150,7 @@ function taboola_get_attached_js($type = 'internal') {
     array(
       'data' => implode(PHP_EOL, $js),
       'type' => 'inline',
+      'weight' => 0,
     )
   );
 }
