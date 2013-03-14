@@ -29,6 +29,23 @@ function taboola_menu() {
 }
 
 /**
+ * Implements hook_theme().
+ */
+function taboola_theme() {
+  return array(
+    'taboola_container' => array(
+      'variables' => array(
+        'widget_class' => '',
+        'widget_type' => '',
+        'widget_id' => '',
+      ),
+      'path' => drupal_get_path('module', 'taboola') . '/theme',
+      'template' => 'taboola-container',
+    ),
+  );
+}
+
+/**
  * Implementation of hook_help().
  */
 function taboola_help($path, $arg) {
@@ -110,7 +127,8 @@ function taboola_get_block_array($block = array(), $type = 'internal') {
       '#attached' => array(
         'js' => taboola_get_attached_js($type),
       ),
-      '#markup' => taboola_get_widget_markup($type),
+      '#widget_type' => $type,
+      '#theme' => 'taboola_container',
     );
   }
   else {
@@ -120,13 +138,13 @@ function taboola_get_block_array($block = array(), $type = 'internal') {
 }
 
 /**
- * Get the div HTML that the widget will be placed in.
- * 
- * @param $type
+ * Setup the widget container template.
  */
-function taboola_get_widget_markup($type) {
-  // Return the widget markup.
-  return '<div class="taboola taboola-' . $type . '" id="' . taboola_get_widget_id($type) . '"></div>';
+function template_process_taboola_container(&$vars){
+  // Set widget class.
+  $vars['widget_class'] = 'taboola taboola-' . $vars['widget_type'];
+  // Set widget id.
+  $vars['widget_id'] = taboola_get_widget_id($vars['widget_type']);
 }
 
 /**
