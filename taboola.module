@@ -67,9 +67,9 @@ function taboola_page_alter(&$page) {
       "window._taboola = window._taboola || [];",
       "_taboola.push({article:'auto'});",
     );
-    drupal_add_js(implode(PHP_EOL, $js), array('scope' => 'footer', 'type' => 'inline', 'weight' => 5));
+    drupal_add_js(implode(PHP_EOL, $js), array('scope' => 'footer', 'type' => 'inline', 'weight' => 1));
     // Add external service URL.
-    drupal_add_js($service_path, array('scope' => 'footer', 'type' => 'external', 'weight' => 10));
+    drupal_add_js($service_path, array('scope' => 'footer', 'type' => 'external', 'weight' => 2));
   }
 }
 
