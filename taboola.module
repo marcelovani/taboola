@@ -175,7 +175,7 @@ function taboola_get_attached_js($type = 'internal') {
 
 /**
  * Get widget setting JS.
- * 
+ *
  * @param $widget_type
  */
 function taboola_get_widget_setting_js($type, $container = '') {
@@ -189,7 +189,7 @@ function taboola_get_widget_setting_js($type, $container = '') {
 
 /**
  * Get a Taboola setting.
- * 
+ *
  * @param $key
  */
 function taboola_get_setting($key = '', $default = null) {
@@ -203,7 +203,7 @@ function taboola_get_setting($key = '', $default = null) {
 
 /**
  * Get a default setting.
- * 
+ *
  * @param $key
  */
 function _taboola_get_default_setting($key = '') {
