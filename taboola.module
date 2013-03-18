@@ -62,12 +62,12 @@ function taboola_help($path, $arg) {
 function taboola_block_info() {
   $blocks['taboola_internal'] = array(
     'info' => t('Taboola Internal'),
-    'cache' => DRUPAL_CACHE_PER_PAGE,
+    'cache' => DRUPAL_CACHE_GLOBAL,
   );
 
   $blocks['taboola_external'] = array(
     'info' => t('Taboola External'),
-    'cache' => DRUPAL_CACHE_PER_PAGE,
+    'cache' => DRUPAL_CACHE_GLOBAL,
   );
 
   return $blocks;
@@ -149,7 +149,7 @@ function template_process_taboola_container(&$vars){
 
 /**
  * Get the widget HTML id.
- * 
+ *
  * @param $type
  */
 function taboola_get_widget_id($type) {
