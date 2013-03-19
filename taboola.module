@@ -201,7 +201,7 @@ function taboola_get_setting($key = '', $default = null) {
     $default = _taboola_get_default_setting($key);
   }
   // Attempt a variable_get and fallback on a default value.
-  return variable_get($key, $default);
+  return check_plain(variable_get($key, $default));
 }
 
 /**
