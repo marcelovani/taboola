@@ -56,18 +56,25 @@ function taboola_admin_settings_form() {
       '#title' => t(ucwords($type) . ' Settings'),
       '#group' => 'vertical_tabs',
     );
-    // Type mode.
+    // Mode.
     $form[$type . '_group']['taboola_mode_' . $type] = array(
       '#type' => 'textfield',
       '#title' => t('Mode'),
       '#default_value' => taboola_get_setting('taboola_mode_' . $type),
       '#description' => '',
     );
-    // Type placement.
+    // Placement.
     $form[$type . '_group']['taboola_placement_' . $type] = array(
       '#type' => 'textfield',
       '#title' => t('Placement'),
       '#default_value' => taboola_get_setting('taboola_placement_' . $type),
+      '#description' => '',
+    );
+    // Target Type.
+    $form[$type . '_group']['taboola_target_type_' . $type] = array(
+      '#type' => 'textfield',
+      '#title' => t('Target Type'),
+      '#default_value' => taboola_get_setting('taboola_target_type_' . $type),
       '#description' => '',
     );
   }

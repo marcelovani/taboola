@@ -183,8 +183,11 @@ function taboola_get_widget_setting_js($type, $container = '') {
   $mode = taboola_get_setting('taboola_mode_' . $type);
   $placement = taboola_get_setting('taboola_placement_' . $type);
   $container = empty($container) ? taboola_get_widget_id($type) : $container;
+  // Get target type setting.
+  $target_type = taboola_get_setting('taboola_target_type_' . $type);
+  $target_type_json = !empty($target_type) ? ", target_type:'" . $target_type . "'" : '';
   // Return setting JS.
-  return "_taboola.push({mode:'" . $mode . "', container:'" . $container . "', placement:'" . $placement . "'});";
+  return "_taboola.push({mode:'" . $mode . "', container:'" . $container . "', placement:'" . $placement . "'" . $target_type_json . "});";
 }
 
 /**
