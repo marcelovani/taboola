@@ -57,11 +57,11 @@ function taboola_help($path, $arg) {
 
 /**
  * Implements hook_block_info().
- * Used to create 2 blocks - one for internal, one for external.
+ * Used to create 2 blocks - one for default, one for external.
  */
 function taboola_block_info() {
-  $blocks['taboola_internal'] = array(
-    'info' => t('Taboola Internal'),
+  $blocks['taboola_default'] = array(
+    'info' => t('Taboola Default'),
     'cache' => DRUPAL_CACHE_GLOBAL,
   );
 
@@ -92,15 +92,15 @@ function taboola_page_alter(&$page) {
 
 /**
  * Implements hook_block_view().
- * Used to create the content for the internal/external ad blocks.
+ * Used to create the content for the default/external ad blocks.
  * Uses variables set in the admin form.
  */
 function taboola_block_view($delta = '') {
   $block = array();
 
   switch ($delta) {
-    case 'taboola_internal':
-      $block = taboola_get_block_array($block, 'internal');
+    case 'taboola_default':
+      $block = taboola_get_block_array($block, 'default');
       break;
 
     case 'taboola_external':
@@ -117,7 +117,7 @@ function taboola_block_view($delta = '') {
 /**
  * Create taboola block array.
  */
-function taboola_get_block_array($block = array(), $type = 'internal') {
+function taboola_get_block_array($block = array(), $type = 'default') {
   // Get the block subject.
   $block_subject = taboola_get_setting('taboola_block_subject_' . $type);
   // Create block subject and content.
@@ -159,7 +159,7 @@ function taboola_get_widget_id($type) {
 /**
  * Returns attached JS array
  */
-function taboola_get_attached_js($type = 'internal') {
+function taboola_get_attached_js($type = 'default') {
   // Create JS.
   $js = array();
   $js[] = "window._taboola = window._taboola || [];";
@@ -211,9 +211,9 @@ function _taboola_get_default_setting($key = '') {
   $default_settings = array(
     'taboola_enabled' => FALSE,
     'taboola_placement_external' => 'bottom-main-column-external',
-    'taboola_placement_internal' => 'bottom-main-column',
+    'taboola_placement_default' => 'bottom-main-column',
     'taboola_mode_external' => 'autosized-generated-2r-external',
-    'taboola_mode_internal' => 'autosized-generated-2r',
+    'taboola_mode_default' => 'autosized-generated-2r',
   );
   // Return default setting if specified.
   if (isset($default_settings[$key])) {
@@ -227,5 +227,5 @@ function _taboola_get_default_setting($key = '') {
  * Return array of widget types.
  */
 function taboola_get_widget_types() {
-  return array('internal', 'external');
+  return array('default', 'external');
 }
