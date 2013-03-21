@@ -185,9 +185,9 @@ function taboola_get_widget_setting_js($type, $container = '') {
   $container = empty($container) ? taboola_get_widget_id($type) : $container;
   // Get target type setting.
   $target_type = taboola_get_setting('taboola_target_type_' . $type);
-  $target_type_json = !empty($target_type) ? ", target_type:'" . $target_type . "'" : '';
+  $target_type_json = !empty($target_type) ? ", target_type:'" . check_plain($target_type) . "'" : '';
   // Return setting JS.
-  return "_taboola.push({mode:'" . check_plain($mode) . "', container:'" . $container . "', placement:'" .  check_plain($placement) . "'" .  check_plain($target_type_json) . "});";
+  return "_taboola.push({mode:'" . check_plain($mode) . "', container:'" . $container . "', placement:'" .  check_plain($placement) . "'" .  $target_type_json . "});";
 }
 
 /**
