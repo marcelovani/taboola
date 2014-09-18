@@ -77,6 +77,13 @@ function taboola_admin_settings_form() {
       '#default_value' => taboola_get_setting('taboola_target_type_' . $type),
       '#description' => '',
     );
+    // Container.
+    $form[$type . '_group']['taboola_container_' . $type] = array(
+      '#type' => 'textfield',
+      '#title' => t('Container'),
+      '#default_value' => taboola_get_setting('taboola_container_' . $type),
+      '#description' => '',
+    );
   }
 
   return system_settings_form($form);

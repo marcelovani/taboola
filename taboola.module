@@ -60,13 +60,25 @@ function taboola_help($path, $arg) {
  * Used to create 2 blocks - one for default, one for external.
  */
 function taboola_block_info() {
-  $blocks['taboola_default'] = array(
-    'info' => t('Taboola Default'),
+  $blocks['taboola_block1'] = array(
+    'info' => t('Taboola Block1'),
     'cache' => DRUPAL_CACHE_GLOBAL,
   );
 
-  $blocks['taboola_external'] = array(
-    'info' => t('Taboola External'),
+  $blocks['taboola_block2'] = array(
+    'info' => t('Taboola Block2'),
+    'cache' => DRUPAL_CACHE_GLOBAL,
+  );
+  $blocks['taboola_block3'] = array(
+    'info' => t('Taboola Block3'),
+    'cache' => DRUPAL_CACHE_GLOBAL,
+  );
+  $blocks['taboola_block3'] = array(
+    'info' => t('Taboola Block3'),
+    'cache' => DRUPAL_CACHE_GLOBAL,
+  );
+  $blocks['taboola_block4'] = array(
+    'info' => t('Taboola Block4'),
     'cache' => DRUPAL_CACHE_GLOBAL,
   );
 
@@ -76,17 +88,24 @@ function taboola_block_info() {
 /**
  * Implements hook_page_alter().
  */
-function taboola_page_alter(&$page) {
-  // Add footer JS.
+function denofgeek_taboola_page_alter(&$page) {
+  // Add header and footer JS.
   if (taboola_get_setting('taboola_enabled') && $service_path = taboola_get_setting('taboola_service_path')) {
-    // Add inline JS.
+    // Add inline header JS.
     $js = array(
       "window._taboola = window._taboola || [];",
       "_taboola.push({article:'auto'});",
+      "!function (e, f, u) { e.async = 1; e.src = u; f.parentNode.insertBefore(e, f);}",
+      "(document.createElement('script'), document.getElementsByTagName('script')[0], '$service_path');"
     );
-    drupal_add_js(implode(PHP_EOL, $js), array('scope' => 'footer', 'type' => 'inline', 'weight' => 1));
-    // Add external service URL.
-    drupal_add_js($service_path, array('scope' => 'footer', 'type' => 'external', 'weight' => 2));
+    drupal_add_js(implode(PHP_EOL, $js), array('scope' => 'header', 'type' => 'inline', 'weight' => 1));
+
+    //Add inline footer JS.
+    $footer_js = array(
+      "window._taboola = window._taboola || [];",
+      "_taboola.push({flush: true});"
+      );
+    drupal_add_js(implode(PHP_EOL, $footer_js), array('scope' => 'footer', 'type' => 'inline', 'weight' => 2));
   }
 }
 
@@ -99,12 +118,20 @@ function taboola_block_view($delta = '') {
   $block = array();
 
   switch ($delta) {
-    case 'taboola_default':
-      $block = taboola_get_block_array($block, 'default');
+    case 'taboola_block1':
+      $block = taboola_get_block_array($block, 'block1');
       break;
 
-    case 'taboola_external':
-      $block = taboola_get_block_array($block, 'external');
+    case 'taboola_block2':
+      $block = taboola_get_block_array($block, 'block2');
+      break;
+
+    case 'taboola_block3':
+      $block = taboola_get_block_array($block, 'block3');
+      break;
+
+    case 'taboola_block4':
+      $block = taboola_get_block_array($block, 'block4');
       break;
 
     default:
@@ -117,7 +144,7 @@ function taboola_block_view($delta = '') {
 /**
  * Create taboola block array.
  */
-function taboola_get_block_array($block = array(), $type = 'default') {
+function taboola_get_block_array($block = array(), $type = 'block1') {
   // Get the block subject.
   $block_subject = taboola_get_setting('taboola_block_subject_' . $type);
   // Create block subject and content.
@@ -141,19 +168,8 @@ function taboola_get_block_array($block = array(), $type = 'default') {
  * Setup the widget container template.
  */
 function template_process_taboola_container(&$vars){
-  // Set widget class.
-  $vars['widget_class'] = 'taboola taboola-' . $vars['widget_type'];
   // Set widget id.
-  $vars['widget_id'] = taboola_get_widget_id($vars['widget_type']);
-}
-
-/**
- * Get the widget HTML id.
- *
- * @param $type
- */
-function taboola_get_widget_id($type) {
-  return 'taboola-widget-' . $type;
+  $vars['widget_id'] = taboola_get_setting('taboola_container_' . $vars['widget_type']);
 }
 
 /**
@@ -168,6 +184,7 @@ function taboola_get_attached_js($type = 'default') {
     array(
       'data' => implode(PHP_EOL, $js),
       'type' => 'inline',
+      'scope' => 'footer',
       'weight' => 0,
     )
   );
@@ -182,10 +199,12 @@ function taboola_get_widget_setting_js($type, $container = '') {
   // Get Taboola JS settings for this type.
   $mode = taboola_get_setting('taboola_mode_' . $type);
   $placement = taboola_get_setting('taboola_placement_' . $type);
-  $container = empty($container) ? taboola_get_widget_id($type) : $container;
+  //get container
+  $container = taboola_get_setting('taboola_container_' . $type);
   // Get target type setting.
   $target_type = taboola_get_setting('taboola_target_type_' . $type);
-  $target_type_json = !empty($target_type) ? ", target_type:'" . check_plain($target_type) . "'" : '';
+  $target_type_json = !empty($target_type) ? ", target_type:'" . check_plain($target_type) . "'" : '';  //
+
   // Return setting JS.
   return "_taboola.push({mode:'" . check_plain($mode) . "', container:'" . $container . "', placement:'" .  check_plain($placement) . "'" .  $target_type_json . "});";
 }
@@ -196,11 +215,7 @@ function taboola_get_widget_setting_js($type, $container = '') {
  * @param $key
  */
 function taboola_get_setting($key = '', $default = null) {
-  // Use supplied $default if specified.
-  if ($default === null) {
-    $default = _taboola_get_default_setting($key);
-  }
-  // Attempt a variable_get and fallback on a default value.
+  // Attempt a variable_get.
   return variable_get($key, $default);
 }
 
@@ -230,5 +245,5 @@ function _taboola_get_default_setting($key = '') {
  * Return array of widget types.
  */
 function taboola_get_widget_types() {
-  return array('default', 'external');
+  return array('block1', 'block2','block3','block4');
 }
