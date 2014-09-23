@@ -57,7 +57,7 @@ function taboola_help($path, $arg) {
 
 /**
  * Implements hook_block_info().
- * Used to create 2 blocks - one for default, one for external.
+ * Used to create 4 blocks.
  */
 function taboola_block_info() {
   $blocks['taboola_block1'] = array(
@@ -88,9 +88,10 @@ function taboola_block_info() {
 /**
  * Implements hook_page_alter().
  */
-function denofgeek_taboola_page_alter(&$page) {
-  // Add header and footer JS.
-  if (taboola_get_setting('taboola_enabled') && $service_path = taboola_get_setting('taboola_service_path')) {
+function taboola_page_alter(&$page) {
+
+  //Add header and footer JS.
+  if (!path_is_admin(current_path()) && taboola_get_setting('taboola_enabled') && $service_path = taboola_get_setting('taboola_service_path')) {
     // Add inline header JS.
     $js = array(
       "window._taboola = window._taboola || [];",
@@ -98,15 +99,17 @@ function denofgeek_taboola_page_alter(&$page) {
       "!function (e, f, u) { e.async = 1; e.src = u; f.parentNode.insertBefore(e, f);}",
       "(document.createElement('script'), document.getElementsByTagName('script')[0], '$service_path');"
     );
+
     drupal_add_js(implode(PHP_EOL, $js), array('scope' => 'header', 'type' => 'inline', 'weight' => 1));
 
     //Add inline footer JS.
     $footer_js = array(
       "window._taboola = window._taboola || [];",
       "_taboola.push({flush: true});"
-      );
+    );
     drupal_add_js(implode(PHP_EOL, $footer_js), array('scope' => 'footer', 'type' => 'inline', 'weight' => 2));
   }
+
 }
 
 /**
