@@ -73,10 +73,6 @@ function taboola_block_info() {
     'info' => t('Taboola Block3'),
     'cache' => DRUPAL_CACHE_GLOBAL,
   );
-  $blocks['taboola_block3'] = array(
-    'info' => t('Taboola Block3'),
-    'cache' => DRUPAL_CACHE_GLOBAL,
-  );
   $blocks['taboola_block4'] = array(
     'info' => t('Taboola Block4'),
     'cache' => DRUPAL_CACHE_GLOBAL,
