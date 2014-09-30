@@ -36,18 +36,18 @@ function taboola_admin_settings_form() {
   );
 
   foreach (taboola_get_widget_types() as $type) {
-    // Block settings for each type.
-    $form['block_group']['taboola_block_subject_' . $type] = array(
-      '#type' => 'textfield',
-      '#title' => t(ucwords($type) . ' Block Title'),
-      '#default_value' => taboola_get_setting('taboola_block_subject_' . $type),
-      '#description' => 'The title you want to be displayed on the block. Use &lt;none&gt; if no title is desired.',
-    );
     // Type group.
     $form[$type . '_group'] = array(
       '#type' => 'fieldset',
       '#title' => t(ucwords($type) . ' Settings'),
       '#group' => 'vertical_tabs',
+    );
+    // Block settings for each type.
+    $form[$type . '_group']['taboola_block_subject_' . $type] = array(
+      '#type' => 'textfield',
+      '#title' => t('Block Title'),
+      '#default_value' => taboola_get_setting('taboola_block_subject_' . $type),
+      '#description' => 'The title you want to be displayed on the block. Use &lt;none&gt; if no title is desired.',
     );
     // Mode.
     $form[$type . '_group']['taboola_mode_' . $type] = array(
