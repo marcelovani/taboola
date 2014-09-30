@@ -35,13 +35,6 @@ function taboola_admin_settings_form() {
     '#default_tab' => 'edit-block-group',
   );
 
-  // Block group.
-  $form['block_group'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Block Settings'),
-    '#group' => 'vertical_tabs',
-  );
-
   foreach (taboola_get_widget_types() as $type) {
     // Block settings for each type.
     $form['block_group']['taboola_block_subject_' . $type] = array(
