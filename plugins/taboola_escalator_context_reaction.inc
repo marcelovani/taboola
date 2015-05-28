@@ -53,9 +53,40 @@ class taboola_escalator_context_reaction extends context_reaction {
    */
   function execute() {
     foreach ($this->get_contexts() as $context) {
-      if (isset($context->reactions['taboola_escalator'])) {
-        return $context->reactions['taboola_escalator'];
+      if (isset($context->reactions['taboola_escalator']['values'])) {
+        if (!path_is_admin(current_path()) && taboola_get_setting('taboola_enabled') && taboola_get_setting('taboola_service_path')) {
+          // Set the global taboola variable.
+          $js[] = "window._taboola = window._taboola || [];";
+
+          // Clean and add the JS params.
+          $js_params = array();
+          foreach ($context->reactions['taboola_escalator']['values'] as $key => $value) {
+            $js_params[] = t("!key: !value", array(
+              '!key' => check_plain($key),
+              '!value' => $this->cleanJsValue($key, $value),
+            ));
+          }
+          $js[] = "_taboola.push({" . implode(', ', $js_params) . "});";
+
+          // Add inline header JS.
+          drupal_add_js(implode(PHP_EOL, $js), array('scope' => 'header', 'type' => 'inline', 'weight' => 1));
+        }
       }
+    }
+  }
+
+  /**
+   * Clean the specified variable.
+   *
+   * @param $key
+   * @param $value
+   */
+  function cleanJsValue($key, $value) {
+   if ($key == 'slider') {
+      return (bool) $value ? 'true' : 'false';
+    }
+    else {
+      return "'" . check_plain($value) . "'";
     }
   }
 

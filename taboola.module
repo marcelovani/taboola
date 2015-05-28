@@ -284,37 +284,7 @@ function taboola_page_build(&$page) {
   // Execute taboola_escalate plugin.
   if (module_exists('context')) {
     if ($plugin = context_get_plugin('reaction', 'taboola_escalator')) {
-      if ($taboola_settings = $plugin->execute()) {
-        if (!path_is_admin(current_path()) && taboola_get_setting('taboola_enabled') && taboola_get_setting('taboola_service_path')) {
-          // Set the global taboola variable.
-          $js[] = "window._taboola = window._taboola || [];";
-
-          // Clean and add the JS params.
-          $js_params = array();
-          foreach ($taboola_settings['values'] as $key => $value) {
-            $js_params[] = t("!key: !value", array('!key' => check_plain($key), '!value' => _taboola_get_clean_js_value($key, $value)));
-          }
-          $js[] = "_taboola.push({" . implode(', ', $js_params) . "});";
-
-          // Add inline header JS.
-          drupal_add_js(implode(PHP_EOL, $js), array('scope' => 'header', 'type' => 'inline', 'weight' => 1));
-        }
-      }
+      $plugin->execute();
     }
-  }
-}
-
-/**
- * Clean the specified variable.
- *
- * @param $key
- * @param $value
- */
-function _taboola_get_clean_js_value($key, $value) {
- if ($key == 'slider') {
-    return (bool) $value ? 'true' : 'false';
-  }
-  else {
-    return "'" . check_plain($value) . "'";
   }
 }
