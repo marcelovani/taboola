@@ -69,7 +69,7 @@ class taboola_escalator_context_reaction extends context_reaction {
           $js[] = "_taboola.push({" . implode(', ', $js_params) . "});";
 
           // Add inline header JS.
-          drupal_add_js(implode(PHP_EOL, $js), array('scope' => 'header', 'type' => 'inline', 'weight' => 1));
+          drupal_add_js(implode(PHP_EOL, $js), array('scope' => 'footer', 'type' => 'inline', 'weight' => 1));
         }
       }
     }
