@@ -145,7 +145,6 @@ function taboola_block_view($delta = '') {
     default:
       break;
   }
-
   return $block;
 }
 

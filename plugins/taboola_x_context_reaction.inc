@@ -14,7 +14,7 @@ class taboola_x_context_reaction extends context_reaction {
       '#type' => 'fieldset',
     );
     $form['values']['enabled'] = array(
-      '#type' => hidden,
+      '#type' => 'hidden',
       '#value' => 1,
     );
     $form['values']['info'] = array(
