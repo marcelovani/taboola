@@ -49,6 +49,7 @@ class taboola_x_context_reaction extends context_reaction {
         }
 
         if (!path_is_admin(current_path()) && taboola_get_setting('taboola_enabled') && ($service_path)) {
+          $service_path = check_plain($service_path);
           $js = array(
             "!function (e, f, u) { e.async = 1; e.src = u; f.parentNode.insertBefore(e, f);}",
             "(document.createElement('script'), document.getElementsByTagName('script')[0], '$service_path');"
