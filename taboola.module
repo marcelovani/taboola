@@ -110,6 +110,9 @@ function taboola_page_alter(&$page) {
       if ($plugin = context_get_plugin('reaction', 'taboola_escalator')) {
         $plugin->execute();
       }
+      if ($plugin = context_get_plugin('reaction', 'taboola_x')) {
+        $plugin->execute();
+      }
     }
   }
 
@@ -264,6 +267,10 @@ function taboola_context_registry() {
         'title' => t('Taboola Escalator'),
         'plugin' => 'taboola_escalator_context_reaction',
       ),
+      'taboola_x' => array(
+        'title' => t('Taboola-X'),
+        'plugin' => 'taboola_x_context_reaction',
+      ),
     ),
   );
 }
@@ -278,6 +285,14 @@ function taboola_context_plugins() {
       'path' => drupal_get_path('module', 'taboola') . '/plugins',
       'file' => 'taboola_escalator_context_reaction.inc',
       'class' => 'taboola_escalator_context_reaction',
+      'parent' => 'context_condition',
+    ),
+  );
+  $plugins['taboola_x_context_reaction'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'taboola') . '/plugins',
+      'file' => 'taboola_x_context_reaction.inc',
+      'class' => 'taboola_x_context_reaction',
       'parent' => 'context_condition',
     ),
   );
