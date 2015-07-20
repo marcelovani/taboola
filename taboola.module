@@ -107,15 +107,14 @@ function taboola_page_alter(&$page) {
 
     // Execute taboola_escalate plugin.
     if (module_exists('context')) {
-      if ($plugin = context_get_plugin('reaction', 'taboola_escalator')) {
-        $plugin->execute();
-      }
-      if ($plugin = context_get_plugin('reaction', 'taboola_x')) {
-        $plugin->execute();
+      $reactions = array('taboola_escalator', 'taboola_x');
+      foreach ($reactions as $reaction) {
+        if ($plugin = context_get_plugin('reaction', $reaction)) {
+          $plugin->execute();
+        }
       }
     }
   }
-
 }
 
 /**
