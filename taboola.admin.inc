@@ -9,6 +9,7 @@
 
 /**
  * Implements hook_admin_settings_form().
+ *
  * Used to create the admin form to configure the taboola blocks.
  */
 function taboola_admin_settings_form() {
@@ -39,7 +40,7 @@ function taboola_admin_settings_form() {
     // Type group.
     $form[$type . '_group'] = array(
       '#type' => 'fieldset',
-      '#title' => t(ucwords($type) . ' Settings'),
+      '#title' => t('@type Settings', array('@type' => ucwords($type))),
       '#group' => 'vertical_tabs',
     );
     // Block settings for each type.
@@ -47,7 +48,7 @@ function taboola_admin_settings_form() {
       '#type' => 'textfield',
       '#title' => t('Block Title'),
       '#default_value' => taboola_get_setting('taboola_block_subject_' . $type),
-      '#description' => 'The title you want to be displayed on the block. Use &lt;none&gt; if no title is desired.',
+      '#description' => t('The title you want to be displayed on the block. Use &lt;none&gt; if no title is desired.'),
     );
     // Mode.
     $form[$type . '_group']['taboola_mode_' . $type] = array(

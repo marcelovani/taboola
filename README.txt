@@ -22,8 +22,8 @@ Taboola can be configure using the admin settings form:
 
 The service path should be set, which will be specific to your application.
 
-The internal/external modes and placement can be configured here if you need to override the 
-defaults.
+The internal/external modes and placement can be configured here if you
+need to override the defaults.
 
-Taboola can be disabled from being displayed without disabling the module - This allows you to 
-temporarily turn off Taboola ads.
+Taboola can be disabled from being displayed without disabling the module
+- This allows you to temporarily turn off Taboola ads.

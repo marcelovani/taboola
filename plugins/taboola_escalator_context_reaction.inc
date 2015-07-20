@@ -3,11 +3,15 @@
  * @file
  * Context reaction plugin for Taboola escalator.
  */
+
+/**
+ * Provides Taboola Escalator context reaction.
+ */
 class taboola_escalator_context_reaction extends context_reaction {
   /**
    * Form options.
    */
-  function options_form($context) {
+  public function options_form($context) {
     $form = array();
     $values = array();
 
@@ -51,7 +55,7 @@ class taboola_escalator_context_reaction extends context_reaction {
   /**
    * Execute context.
    */
-  function execute() {
+  public function execute() {
     foreach ($this->get_contexts() as $context) {
       if (isset($context->reactions['taboola_escalator']['values'])) {
         if (!path_is_admin(current_path()) && taboola_get_setting('taboola_enabled') && taboola_get_setting('taboola_service_path')) {
@@ -61,15 +65,16 @@ class taboola_escalator_context_reaction extends context_reaction {
           // Clean and add the JS params.
           $js_params = array();
           foreach ($context->reactions['taboola_escalator']['values'] as $key => $value) {
-            $js_params[] = t("!key: !value", array(
-              '!key' => check_plain($key),
-              '!value' => $this->cleanJsValue($key, $value),
-            ));
+            $js_params[] = sprintf("%s: %s", check_plain($key), $this->cleanJsValue($key, $value));
           }
           $js[] = "_taboola.push({" . implode(', ', $js_params) . "});";
 
           // Add inline header JS.
-          drupal_add_js(implode(PHP_EOL, $js), array('scope' => 'footer', 'type' => 'inline', 'weight' => 1));
+          drupal_add_js(implode(PHP_EOL, $js), array(
+            'scope' => 'footer',
+            'type' => 'inline',
+            'weight' => 1,
+          ));
         }
       }
     }
@@ -78,11 +83,13 @@ class taboola_escalator_context_reaction extends context_reaction {
   /**
    * Clean the specified variable.
    *
-   * @param $key
-   * @param $value
+   * @param string $key
+   *   Variable key.
+   * @param string $value
+   *   Variable value.
    */
-  function cleanJsValue($key, $value) {
-   if ($key == 'slider') {
+  protected function cleanJsValue($key, $value) {
+    if ($key == 'slider') {
       return (bool) $value ? 'true' : 'false';
     }
     else {
