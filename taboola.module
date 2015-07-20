@@ -1,7 +1,6 @@
 <?php
 /**
  * @file
- *
  * Taboola module code.
  */
 
@@ -226,7 +225,7 @@ function taboola_get_widget_setting_js($type, $container = '') {
   $target_type_json = !empty($target_type) ? ", target_type:'" . check_plain($target_type) . "'" : '';
 
   // Return setting JS.
-  return "_taboola.push({mode:'" . check_plain($mode) . "', container:'" . $container . "', placement:'" .  check_plain($placement) . "'" .  $target_type_json . "});";
+  return "_taboola.push({mode:'" . check_plain($mode) . "', container:'" . $container . "', placement:'" . check_plain($placement) . "'" . $target_type_json . "});";
 }
 
 /**

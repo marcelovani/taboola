@@ -1,7 +1,6 @@
-<?
+<?php
 /**
  * @file
- *
  * Taboola container template.
  */
 ?>
