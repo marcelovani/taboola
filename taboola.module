@@ -1,5 +1,11 @@
 <?php
 /**
+ * @file
+ *
+ * Taboola module code.
+ */
+
+/**
  * Implements hook_permission().
  */
 function taboola_permission() {
@@ -104,7 +110,7 @@ function taboola_page_alter(&$page) {
     // Add inline footer JS.
     $footer_js = array(
       "window._taboola = window._taboola || [];",
-      "_taboola.push({flush: true});"
+      "_taboola.push({flush: true});",
     );
     drupal_add_js(implode(PHP_EOL, $footer_js), array(
       'scope' => 'footer',
