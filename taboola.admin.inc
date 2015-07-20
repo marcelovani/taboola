@@ -22,6 +22,14 @@ function taboola_admin_settings_form() {
     '#description' => '',
   );
 
+  // Taboola-X Service path.
+  $form['taboola_x_service_path'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Taboola-X Service Path'),
+    '#default_value' => taboola_get_setting('taboola_x_service_path'),
+    '#description' => '',
+  );
+
   // Global enabled flag.
   $form['taboola_enabled'] = array(
     '#type' => 'checkbox',
