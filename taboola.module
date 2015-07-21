@@ -238,8 +238,10 @@ function taboola_get_widget_setting_js($type, $container = '') {
  *   Default variable value.
  */
 function taboola_get_setting($key = '', $default = NULL) {
-  // Attempt a variable_get.
-  return variable_get($key, $default);
+  $value = variable_get($key, '');
+  // The variable_get function will check the variable with isset(),
+  // use empty() to check the variable existence and empty string as well.
+  return empty($value) ? $default : $value;
 }
 
 /**
