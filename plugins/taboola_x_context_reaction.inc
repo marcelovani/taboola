@@ -3,11 +3,12 @@
  * @file
  * Context reaction plugin for Taboola escalator.
  */
+
 class taboola_x_context_reaction extends context_reaction {
   /**
    * Form options.
    */
-  function options_form($context) {
+  public function options_form($context) {
     $form = array();
 
     $form['values'] = array(
@@ -24,7 +25,7 @@ class taboola_x_context_reaction extends context_reaction {
     if (is_null(taboola_get_setting('taboola_x_service_path'))) {
       $form['values']['script']['#markup'] .= PHP_EOL . t('Please configure !link.',
         array(
-          '!link' => '<a href="/admin/config/system/taboola">Taboola-X Service path</a>'
+          '!link' => '<a href="/admin/config/system/taboola">Taboola-X Service path</a>',
         )
       );
     }
@@ -35,43 +36,38 @@ class taboola_x_context_reaction extends context_reaction {
   /**
    * Execute context.
    */
-  function execute() {
+  public function execute() {
     foreach ($this->get_contexts() as $context) {
       if (isset($context->reactions['taboola_x']['values'])) {
 
         $service_path = taboola_get_setting('taboola_x_service_path');
+
         if (is_null($service_path)) {
           drupal_set_message(t('Please configure !link.',
             array(
-              '!link' => '<a href="/admin/config/system/taboola">Taboola-X Service path</a>'
+              '!link' => '<a href="/admin/config/system/taboola">Taboola-X Service path</a>',
             )
           ), 'warning');
+
+          // Early return.
+          return;
         }
 
-        if (!path_is_admin(current_path()) && taboola_get_setting('taboola_enabled') && ($service_path)) {
+        if (!path_is_admin(current_path()) && taboola_get_setting('taboola_enabled')) {
           $service_path = check_plain($service_path);
           $js = array(
             "!function (e, f, u) { e.async = 1; e.src = u; f.parentNode.insertBefore(e, f);}",
-            "(document.createElement('script'), document.getElementsByTagName('script')[0], '$service_path');"
+            "(document.createElement('script'), document.getElementsByTagName('script')[0], '$service_path');",
           );
-          drupal_add_js(implode(PHP_EOL, $js), array('scope' => 'header', 'type' => 'inline', 'weight' => 2));
+
+          // Add inline JS.
+          drupal_add_js(implode(PHP_EOL, $js), array(
+            'scope' => 'header',
+            'type' => 'inline',
+            'weight' => 2,
+          ));
         }
       }
-    }
-  }
-
-  /**
-   * Clean the specified variable.
-   *
-   * @param $key
-   * @param $value
-   */
-  function cleanJsValue($key, $value) {
-   if ($key == 'slider') {
-      return (bool) $value ? 'true' : 'false';
-    }
-    else {
-      return "'" . check_plain($value) . "'";
     }
   }
 
