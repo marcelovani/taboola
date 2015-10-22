@@ -46,6 +46,12 @@ function taboola_dfp_native_context_plugins() {
  *    the first found.
  */
 function taboola_dfp_native_page_build(&$page) {
+
+  // Check for parent module configurations.
+  if (path_is_admin(current_path()) || !taboola_get_setting('taboola_enabled') || !taboola_get_setting('taboola_service_path')) {
+    return;
+  }
+
   $taboola_dfp_native_tags = array();
 
   // Execute taboola_dfp_native plugin.
