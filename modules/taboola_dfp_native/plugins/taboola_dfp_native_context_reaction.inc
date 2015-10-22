@@ -42,6 +42,16 @@ class TaboolaDFPNativeContextReaction extends context_reaction {
       '#options' => $options,
       '#default_value' => isset($values['ad_tag']) ? $values['ad_tag'] : array(),
     );
+    // This value is used in parent module.
+    // @see: taboola_page_alter().
+    $form['values']['loader_identifier'] = array(
+      '#title' => t('Loader Identifier'),
+      '#description' => t('The "Loader Identifier" is provided by Taboola per page or page group.'),
+      '#type' => 'textfield',
+      '#size' => 30,
+      '#default_value' => isset($values['loader_identifier']) ? $values['loader_identifier'] : 'article',
+      '#required' => TRUE,
+    );
     $form['values']['selector'] = array(
       '#title' => t('Selector'),
       '#description' => t('Enter the CSS selector where you wish to ad unit to render. You can use # for id and . for class.'),

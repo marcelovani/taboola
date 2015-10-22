@@ -87,15 +87,22 @@ function taboola_block_info() {
 
 /**
  * Implements hook_page_alter().
+ *
+ * It's very important that this hook is fired after hook_page_build().
+ * @see: taboola_dfp_native_page_build().
  */
 function taboola_page_alter(&$page) {
 
   // Add header and footer JS.
   if (!path_is_admin(current_path()) && taboola_get_setting('taboola_enabled') && $service_path = taboola_get_setting('taboola_service_path')) {
+
+    // Identifier coming from outside of the module.
+    $loader_identifier = !empty($page['taboola']['vars']['loader_identifier']) ? $page['taboola']['vars']['loader_identifier'] : 'article';
+
     // Add inline header JS.
     $js = array(
       "window._taboola = window._taboola || [];",
-      "_taboola.push({article:'auto'});",
+      "_taboola.push({" . $loader_identifier . ":'auto'});",
       "!function (e, f, u) { e.async = 1; e.src = u; f.parentNode.insertBefore(e, f);}",
       "(document.createElement('script'), document.getElementsByTagName('script')[0], '$service_path');",
     );

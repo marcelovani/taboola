@@ -59,6 +59,10 @@ function taboola_dfp_native_page_build(&$page) {
           continue;
         }
 
+        // Add the loader_identifier to the page vars,
+        // in order to be used in the parent module hook taboola_page_alter().
+        $page['taboola']['vars']['loader_identifier'] = !empty($values['loader_identifier']) ? $values['loader_identifier'] : 'article';
+
         // Load the DFP tag.
         $tag = dfp_tag_load($values['ad_tag']);
 
