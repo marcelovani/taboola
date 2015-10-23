@@ -237,43 +237,15 @@ function taboola_get_widget_setting_js($type, $container = '') {
 }
 
 /**
- * Get a Taboola setting.
+ * Get a Taboola setting through a wrapper.
  *
  * @param string $key
  *   Variable key.
  * @param string $default
  *   Default variable value.
  */
-function taboola_get_setting($key = '', $default = NULL) {
-  $value = variable_get($key, '');
-  // The variable_get function will check the variable with isset(),
-  // use empty() to check the variable existence and empty string as well.
-  return empty($value) ? $default : $value;
-}
-
-/**
- * Get a default setting.
- *
- * @param string $key
- *   Variable key.
- */
-function _taboola_get_default_setting($key = '') {
-  // Default Taboola settings are defined here.
-  $default_settings = array(
-    'taboola_enabled' => FALSE,
-    'taboola_placement_external' => 'bottom-main-column-external',
-    'taboola_placement_default' => 'bottom-main-column',
-    'taboola_mode_external' => 'autosized-generated-2r-external',
-    'taboola_mode_default' => 'autosized-generated-2r',
-  );
-
-  // Return default setting if specified.
-  if (isset($default_settings[$key])) {
-    return $default_settings[$key];
-  }
-
-  // Return empty string by default.
-  return '';
+function taboola_get_setting($key, $default = '') {
+  return variable_get($key, $default);
 }
 
 /**
