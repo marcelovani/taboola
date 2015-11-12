@@ -50,14 +50,12 @@ class TaboolaDFPNativeContextReaction extends context_reaction {
       '#type' => 'textfield',
       '#size' => 30,
       '#default_value' => isset($values['loader_identifier']) ? $values['loader_identifier'] : 'article',
-      '#required' => TRUE,
     );
     $form['values']['selector'] = array(
       '#title' => t('Selector'),
       '#description' => t('Enter the CSS selector where you wish to ad unit to render. You can use # for id and . for class.'),
       '#type' => 'textfield',
       '#size' => 60,
-      '#required' => TRUE,
       '#default_value' => isset($values['selector']) ? $values['selector'] : '',
     );
     $form['values']['position'] = array(
