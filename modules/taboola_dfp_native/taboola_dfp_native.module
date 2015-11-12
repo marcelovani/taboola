@@ -52,13 +52,13 @@ function taboola_dfp_native_page_build(&$page) {
     return;
   }
 
-  $taboola_dfp_native_tags = array();
-
   // Execute taboola_dfp_native plugin.
   if ($plugin = context_get_plugin('reaction', 'taboola_dfp_native')) {
     $plugin->execute();
 
     if (!empty($plugin->taboola_dfp_native_tags)) {
+      $taboola_dfp_native_tags = array();
+
       foreach ($plugin->taboola_dfp_native_tags as $machinename => $values) {
         // Just one value is not required (position). So, check for values.
         if (count(array_filter($values)) < count($values) - 1) {
@@ -79,17 +79,20 @@ function taboola_dfp_native_page_build(&$page) {
           $taboola_dfp_native_tags[$machinename]['slotMachinename'] = $tag->machinename;
           $taboola_dfp_native_tags[$machinename]['slotDfpWrapperID'] = !empty($dfp_tag['dfp_wrapper']['#attributes']['id']) ? $dfp_tag['dfp_wrapper']['#attributes']['id'] : FALSE;
 
+          // Allow modules to alter the configuration object.
+          drupal_alter('taboola_dfp_native_tags', $taboola_dfp_native_tags);
+
           // Render the tag.
           $taboola_dfp_native_tags[$machinename]['renderedDfp'] = render($dfp_tag);
           // *Break after the first found one.
           break;
         }
       }
+
+      // Add the javascript.
+      _taboola_dfp_native_add_js($taboola_dfp_native_tags);
     }
   }
-
-  // Add the javascript.
-  _taboola_dfp_native_add_js($taboola_dfp_native_tags);
 }
 
 /**
@@ -113,11 +116,6 @@ function _taboola_dfp_native_add_js($tags) {
   $js[] = ' try {';
 
   foreach ($tags as $name => $values) {
-
-    // Minimum required targets.
-    if (empty($values['targeting']) || count($values['targeting']) < 3) {
-      continue;
-    }
 
     // Correct the targeting keys.
     $targeting = _taboola_dfp_native_prepare_targets($values['targeting']);
@@ -177,7 +175,7 @@ function _taboola_dfp_native_prepare_targets($targeting) {
       $item['target'] = $map[$item['target']];
     }
     // Clean-up the targets.
-    $item['target'] = preg_replace('/[^a-z\d]/i', '', drupal_strtolower(check_plain($item['target'])));
+    $item['target'] = preg_replace('/[^a-z\d]/i', '_', drupal_strtolower(check_plain($item['target'])));
     $item['value'] = preg_replace('/[^a-z\d]/i', '-', drupal_strtolower(check_plain($item['value'])));
 
     return $item;
