@@ -60,6 +60,16 @@ class TaboolaDFPNativeContextReaction extends context_reaction {
       '#required' => TRUE,
       '#default_value' => isset($values['selector']) ? $values['selector'] : '',
     );
+    $form['values']['last_el_hide'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Hide the last element(Based on above selector)'),
+      '#default_value' => !empty($values['last_el_hide']),
+      '#states' => array(
+        'invisible' => array(
+          '#edit-reactions-plugins-taboola-dfp-native-values-selector' => array('value' => ''),
+        ),
+      ),
+    );
     $form['values']['position'] = array(
       '#title' => t('Position'),
       '#description' => t('This determines the position within the selector where you wish to place the ad unit. If you want an ad to appear after the third child add 3 or leave i empty if you want it to be the first element.'),

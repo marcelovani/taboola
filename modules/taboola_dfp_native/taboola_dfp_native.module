@@ -76,9 +76,11 @@ function taboola_dfp_native_page_build(&$page) {
           $dfp_tag = dfp_tag($values['ad_tag']);
           $taboola_dfp_native_tags[$machinename] = $values;
           $taboola_dfp_native_tags[$machinename]['targeting'] = $tag->targeting;
+          $taboola_dfp_native_tags[$machinename]['slotMachinename'] = $tag->machinename;
+          $taboola_dfp_native_tags[$machinename]['slotDfpWrapperID'] = !empty($dfp_tag['dfp_wrapper']['#attributes']['id']) ? $dfp_tag['dfp_wrapper']['#attributes']['id'] : FALSE;
+
           // Render the tag.
           $taboola_dfp_native_tags[$machinename]['renderedDfp'] = render($dfp_tag);
-
           // *Break after the first found one.
           break;
         }
@@ -106,7 +108,6 @@ function _taboola_dfp_native_add_js($tags) {
     ),
   ), 'setting');
 
-  // Drupal.settings.taboolaDfpNative.aaa = "test "; alert("testtt");
   $js = array();
   $js[] = 'googletag.pubads().addEventListener("slotRenderEnded", function(event) {';
   $js[] = ' try {';
