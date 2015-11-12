@@ -22,7 +22,7 @@
                 }
               }
               // Otherwise, make sure to hide it.
-              else {
+              if ((e.slot == googletag.slots[slotName]) && (e.isEmpty === true)) {
                 $('#' + item.slotDfpWrapperID).addClass('element-invisible');
               }
             });
