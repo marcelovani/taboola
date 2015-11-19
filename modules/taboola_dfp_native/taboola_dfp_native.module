@@ -65,6 +65,10 @@ function taboola_dfp_native_page_build(&$page) {
           continue;
         }
 
+        //explode selector CSV into array
+        if(!empty($values['selector'])) {
+          $values['selector'] = explode(PHP_EOL, $values['selector']);
+        }
         // Add the loader_identifier to the page vars,
         // in order to be used in the parent module hook taboola_page_alter().
         $page['taboola']['vars']['loader_identifier'] = !empty($values['loader_identifier']) ? $values['loader_identifier'] : 'article';

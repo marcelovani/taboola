@@ -53,9 +53,10 @@ class TaboolaDFPNativeContextReaction extends context_reaction {
     );
     $form['values']['selector'] = array(
       '#title' => t('Selector'),
-      '#description' => t('Enter the CSS selector where you wish to ad unit to render. You can use # for id and . for class.'),
-      '#type' => 'textfield',
-      '#size' => 60,
+      '#description' => t('Enter the CSS selector where you wish to ad unit to render. Multiple selector can be added, And one selector per line e.g ".field-name-body fiel-item >p".  dfp will get injected on first match. You can use # for id and . for class.'),
+      '#type' => 'textarea',
+      '#cols' => 10,
+      '#rows' => 4,
       '#default_value' => isset($values['selector']) ? $values['selector'] : '',
     );
     $form['values']['position'] = array(
