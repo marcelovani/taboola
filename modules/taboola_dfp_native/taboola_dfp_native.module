@@ -35,6 +35,7 @@ function taboola_dfp_native_context_plugins() {
 }
 
 
+
 /**
  * Implements hook_page_build().
  *
@@ -52,13 +53,12 @@ function taboola_dfp_native_page_build(&$page) {
     return;
   }
 
-  $taboola_dfp_native_tags = array();
-
   // Execute taboola_dfp_native plugin.
   if ($plugin = context_get_plugin('reaction', 'taboola_dfp_native')) {
     $plugin->execute();
 
     if (!empty($plugin->taboola_dfp_native_tags)) {
+      $taboola_dfp_native_tags = array();
       foreach ($plugin->taboola_dfp_native_tags as $machinename => $values) {
         // Just one value is not required (position). So, check for values.
         if (count(array_filter($values)) < count($values) - 1) {
@@ -87,13 +87,15 @@ function taboola_dfp_native_page_build(&$page) {
           break;
         }
       }
+
+      // Allow modules to alter the configuration object.
+      drupal_alter('taboola_dfp_native_tags', $taboola_dfp_native_tags);
+
+      // Add the javascript.
+      _taboola_dfp_native_add_js($taboola_dfp_native_tags);
     }
   }
-
-  // Add the javascript.
-  _taboola_dfp_native_add_js($taboola_dfp_native_tags);
 }
-
 /**
  * Helper to add the javascript code for Taboola DFP Native.
  */
