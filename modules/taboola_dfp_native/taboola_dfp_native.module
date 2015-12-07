@@ -182,7 +182,7 @@ function _taboola_dfp_native_prepare_targets($targeting) {
       $item['target'] = $map[$item['target']];
     }
     // Clean-up the targets.
-    $item['target'] = preg_replace('/[^a-z\d]/i', '', drupal_strtolower(check_plain($item['target'])));
+    $item['target'] = preg_replace('/[^a-z_\d]/i', '', drupal_strtolower(check_plain($item['target'])));
     $item['value'] = preg_replace('/[^a-z\d]/i', '-', drupal_strtolower(check_plain($item['value'])));
 
     return $item;
