@@ -39,12 +39,11 @@ function taboola_dfp_native_context_plugins() {
 /**
  * Implements hook_page_build().
  *
- * Get all needed settings and add it to the JavaScript which will appended
+ * Loop through each available adslot, Get all needed settings
+ * and add it to the JavaScript which will appended
  * the rendered dfp tag in specified location.
  * All the visibility rules should be controlled by the context.
  *
- * @note: *We don't need multiple DFP support per page, so we'll break after
- *    the first found.
  */
 function taboola_dfp_native_page_build(&$page) {
 
@@ -82,9 +81,6 @@ function taboola_dfp_native_page_build(&$page) {
           $taboola_dfp_native_tags[$machinename]['targeting'] = $tag->targeting;
           // Render the tag.
           $taboola_dfp_native_tags[$machinename]['renderedDfp'] = render($dfp_tag);
-
-          // *Break after the first found one.
-          break;
         }
       }
 
