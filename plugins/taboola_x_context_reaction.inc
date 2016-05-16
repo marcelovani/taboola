@@ -4,6 +4,9 @@
  * Context reaction plugin for Taboola escalator.
  */
 
+/**
+ * Provides Taboola X context reaction.
+ */
 class taboola_x_context_reaction extends context_reaction {
   /**
    * Form options.

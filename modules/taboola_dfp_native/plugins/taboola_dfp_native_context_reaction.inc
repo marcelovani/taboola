@@ -4,11 +4,17 @@
  * @file
  * Context reaction plugin for DFP Respond.
  */
+
 class TaboolaDFPNativeContextReaction extends context_reaction {
   public $taboola_dfp_native_tags = array();
 
-  // Form options.
-  function options_form($context) {
+  /**
+   * Form options.
+   *
+   * @param $context
+   * @return array
+   */
+  public function options_form($context) {
     $form = array();
     $values = array();
 
@@ -70,7 +76,9 @@ class TaboolaDFPNativeContextReaction extends context_reaction {
     return $form;
   }
 
-  // Execute context.
+  /**
+   * Execute context.
+   */
   function execute() {
     $i = 0;
     foreach ($this->get_contexts() as $context) {

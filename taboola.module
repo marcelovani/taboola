@@ -89,6 +89,7 @@ function taboola_block_info() {
  * Implements hook_page_alter().
  *
  * It's very important that this hook is fired after hook_page_build().
+ *
  * @see: taboola_dfp_native_page_build().
  */
 function taboola_page_alter(&$page) {
@@ -322,23 +323,25 @@ function taboola_field_extra_fields() {
 /**
  * Utility function to hide any newly created extra_fields.
  *
- * @see https://api.drupal.org/comment/60167#comment-60167
- *
- * @param $entity_type string
+ * @param string $entity_type
  *   Entity type on which the new extra field will reside.
  *
- * @param $bundle string
+ * @param string $bundle
  *   Bundle on which the new extra field will reside.
  *
- * @param $field_name string
+ * @param string $field_name
  *   Machine name of extra field.
+ *
+ * @see https://api.drupal.org/comment/60167#comment-60167
  */
 function taboola_hide_new_extra_field($entity_type, $bundle, $field_name) {
   $settings = field_bundle_settings($entity_type, $bundle);
   $settings_updated = FALSE;
   $entity_info = entity_get_info($entity_type, $bundle);
   $view_modes = array_keys($entity_info['view modes']);
-  if (!in_array('default', $view_modes)) $view_modes[] = 'default';
+  if (!in_array('default', $view_modes)) {
+    $view_modes[] = 'default';
+  }
   foreach ($view_modes as $view_mode) {
     if (!isset($settings['extra_fields']['display'][$field_name][$view_mode])) {
       $settings_updated = TRUE;
@@ -354,7 +357,7 @@ function taboola_hide_new_extra_field($entity_type, $bundle, $field_name) {
 }
 
 /**
- * Implements hook_node_view();
+ * Implements hook_node_view().
  */
 function taboola_node_view($node, $view_mode, $langcode) {
   // Extra fields for the current display maode.
