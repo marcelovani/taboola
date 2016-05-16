@@ -5,14 +5,14 @@
  * Context reaction plugin for DFP Respond.
  */
 
+/**
+ * Provides Taboola DFP native context reaction.
+ */
 class TaboolaDFPNativeContextReaction extends context_reaction {
   public $taboola_dfp_native_tags = array();
 
   /**
    * Form options.
-   *
-   * @param $context
-   * @return array
    */
   public function options_form($context) {
     $form = array();
@@ -79,7 +79,7 @@ class TaboolaDFPNativeContextReaction extends context_reaction {
   /**
    * Execute context.
    */
-  function execute() {
+  public function execute() {
     $i = 0;
     foreach ($this->get_contexts() as $context) {
       if (!isset($context->reactions['taboola_dfp_native'])) {

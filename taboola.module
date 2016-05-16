@@ -325,10 +325,8 @@ function taboola_field_extra_fields() {
  *
  * @param string $entity_type
  *   Entity type on which the new extra field will reside.
- *
  * @param string $bundle
  *   Bundle on which the new extra field will reside.
- *
  * @param string $field_name
  *   Machine name of extra field.
  *
