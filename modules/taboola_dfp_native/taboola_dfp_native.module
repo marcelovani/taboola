@@ -159,9 +159,10 @@ function _taboola_dfp_native_add_js($tags) {
  * Clean up targeting keys and values.
  *
  * @param array $targeting
- *  Taboola DFP native targeting.
+ *   Taboola DFP native targeting.
  *
  * @return array
+ *   Array of prepared targeting.
  */
 function _taboola_dfp_native_prepare_targets($targeting) {
   $map = array(
