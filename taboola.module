@@ -64,23 +64,13 @@ function taboola_help($path, $arg) {
  * Implements hook_block_info().
  */
 function taboola_block_info() {
-  $blocks['taboola_block1'] = array(
-    'info' => t('Taboola Block1'),
-    'cache' => DRUPAL_CACHE_GLOBAL,
-  );
 
-  $blocks['taboola_block2'] = array(
-    'info' => t('Taboola Block2'),
-    'cache' => DRUPAL_CACHE_GLOBAL,
-  );
-  $blocks['taboola_block3'] = array(
-    'info' => t('Taboola Block3'),
-    'cache' => DRUPAL_CACHE_GLOBAL,
-  );
-  $blocks['taboola_block4'] = array(
-    'info' => t('Taboola Block4'),
-    'cache' => DRUPAL_CACHE_GLOBAL,
-  );
+  foreach (taboola_get_widget_types() as $type){
+    $blocks['taboola_'.$type] = array(
+      'info' => t('Taboola '.ucwords($type)),
+      'cache' => DRUPAL_CACHE_GLOBAL,
+    );
+  }
 
   return $blocks;
 }
@@ -142,26 +132,11 @@ function taboola_page_alter(&$page) {
  */
 function taboola_block_view($delta = '') {
   $block = array();
-
-  switch ($delta) {
-    case 'taboola_block1':
-      $block = taboola_get_block_array($block, 'block1');
-      break;
-
-    case 'taboola_block2':
-      $block = taboola_get_block_array($block, 'block2');
-      break;
-
-    case 'taboola_block3':
-      $block = taboola_get_block_array($block, 'block3');
-      break;
-
-    case 'taboola_block4':
-      $block = taboola_get_block_array($block, 'block4');
-      break;
-
-    default:
-      break;
+  $number = str_replace("taboola_block","",$delta);
+  // We check if block delta is taboola_blockX being X a number.
+  if (substr_compare($delta, "taboola_block", 0, 13) == 0 && is_numeric($number)) {
+    $block_name = str_replace('taboola_', '', $delta);
+    $block = taboola_get_block_array($block, $block_name);
   }
   return $block;
 }
@@ -228,7 +203,6 @@ function taboola_get_widget_setting_js($type, $container = '') {
 
   // Get container.
   $container = taboola_get_setting('taboola_container_' . $type);
-
   // Get target type setting.
   $target_type = taboola_get_setting('taboola_target_type_' . $type);
   $target_type_json = !empty($target_type) ? ", target_type:'" . check_plain($target_type) . "'" : '';
@@ -253,7 +227,11 @@ function taboola_get_setting($key, $default = '') {
  * Return array of widget types.
  */
 function taboola_get_widget_types() {
-  return array('block1', 'block2', 'block3', 'block4');
+  $types = array();
+  for ($i = 1; $i < variable_get('taboola_count') + 1; $i++) {
+    $types[] = ('block' . $i);
+  }
+  return $types;
 }
 
 /**

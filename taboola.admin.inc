@@ -14,7 +14,6 @@
  */
 function taboola_admin_settings_form() {
   $form = array();
-
   // Service path.
   $form['taboola_service_path'] = array(
     '#type' => 'textfield',
@@ -36,6 +35,13 @@ function taboola_admin_settings_form() {
     '#type' => 'checkbox',
     '#title' => t('Enabled'),
     '#default_value' => taboola_get_setting('taboola_enabled'),
+  );
+  $form['taboola_count'] = array(
+    '#type' => 'select',
+    '#title' => t('Number of blocks'),
+    '#options' => array_combine(range(1,30), range(1,30)),
+    '#default_value' => taboola_get_setting('taboola_count'),
+    '#description' => t('The number of taboola blocks.'),
   );
 
   // Tab group.
@@ -90,3 +96,4 @@ function taboola_admin_settings_form() {
 
   return system_settings_form($form);
 }
+
