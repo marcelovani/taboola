@@ -40,60 +40,37 @@ function taboola_admin_settings_form() {
     '#type' => 'select',
     '#title' => t('Number of blocks'),
     '#options' => array_combine(range(1,30), range(1,30)),
-    '#default_value' => taboola_get_setting('taboola_count'),
+    '#default_value' => variable_get('taboola_count'),
     '#description' => t('The number of taboola blocks.'),
   );
 
-  // Tab group.
-  $form['vertical_tabs'] = array(
-    '#type' => 'vertical_tabs',
-    '#default_tab' => 'edit-block-group',
-  );
-
-  foreach (taboola_get_widget_types() as $type) {
-    // Type group.
-    $form[$type . '_group'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('@type Settings', array('@type' => ucwords($type))),
-      '#group' => 'vertical_tabs',
-    );
-    // Block settings for each type.
-    $form[$type . '_group']['taboola_block_subject_' . $type] = array(
-      '#type' => 'textfield',
-      '#title' => t('Block Title'),
-      '#default_value' => taboola_get_setting('taboola_block_subject_' . $type),
-      '#description' => t('The title you want to be displayed on the block. Use &lt;none&gt; if no title is desired.'),
-    );
-    // Mode.
-    $form[$type . '_group']['taboola_mode_' . $type] = array(
-      '#type' => 'textfield',
-      '#title' => t('Mode'),
-      '#default_value' => taboola_get_setting('taboola_mode_' . $type),
-      '#description' => '',
-    );
-    // Placement.
-    $form[$type . '_group']['taboola_placement_' . $type] = array(
-      '#type' => 'textfield',
-      '#title' => t('Placement'),
-      '#default_value' => taboola_get_setting('taboola_placement_' . $type),
-      '#description' => '',
-    );
-    // Target Type.
-    $form[$type . '_group']['taboola_target_type_' . $type] = array(
-      '#type' => 'textfield',
-      '#title' => t('Target Type'),
-      '#default_value' => taboola_get_setting('taboola_target_type_' . $type),
-      '#description' => '',
-    );
-    // Container.
-    $form[$type . '_group']['taboola_container_' . $type] = array(
-      '#type' => 'textfield',
-      '#title' => t('Container'),
-      '#default_value' => taboola_get_setting('taboola_container_' . $type),
-      '#description' => '',
+  for ($i = 1; $i < variable_get('taboola_count')+1; $i++) {
+    $form['block_'.$i.'_settings'] = array(
+      '#type' => 'link',
+      '#title' => t('Block ' . $i . ' Settings'),
+      '#href' => '/admin/structure/block/manage/taboola/taboola_block' . $i . '/configure',
+      '#suffix' => '</br>',
     );
   }
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+  );
 
-  return system_settings_form($form);
+  return $form;
 }
 
+
+/**
+ * Saves Intellitxt settings into variables
+ */
+function taboola_admin_settings_form_submit($form, &$form_state) {
+  $selected_taboola_count  = $form_state['input']['taboola_count'];
+  $taboola_blocks = variable_get('taboola_blocks');
+
+  //resize of array
+  array_splice($taboola_blocks, $selected_taboola_count);
+  variable_set('taboola_count',$selected_taboola_count);
+  variable_set('taboola_blocks',$taboola_blocks);
+
+}
