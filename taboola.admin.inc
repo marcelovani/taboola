@@ -47,17 +47,16 @@ function taboola_admin_settings_form() {
   );
 
   // Output block configure links.
-  if (variable_get('taboola_block_count')) {
+  if ($block_info = module_invoke('taboola', 'block_info')) {
     $form['block_links'] = array(
       '#type' => 'fieldset',
       '#title' => t('Configure Blocks'),
     );
-
-    for ($i = 1; $i <= variable_get('taboola_block_count'); $i++) {
-      $form['block_links']['block_'.$i.'_settings'] = array(
+    foreach ($block_info as $block_delta => $block_config) {
+      $form['block_links'][$block_delta . '_settings'] = array(
         '#type' => 'link',
-        '#title' => t('Block ' . $i),
-        '#href' => '/admin/structure/block/manage/taboola/taboola_block' . $i . '/configure',
+        '#title' => $block_config['info'],
+        '#href' => '/admin/structure/block/manage/taboola/' . $block_delta . '/configure',
         '#suffix' => '</br>',
       );
     }

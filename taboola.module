@@ -158,7 +158,7 @@ function taboola_block_configure($delta = '') {
     $form['taboola_group']['taboola_target_type'] = array(
       '#type' => 'textfield',
       '#title' => t('Target Type'),
-      '#default_value' => taboola_get_block_setting($block_index, 'type', $default = ''),
+      '#default_value' => taboola_get_block_setting($block_index, 'target_type', $default = ''),
       '#description' => '',
     );
     // Container.
@@ -185,7 +185,7 @@ function taboola_block_save($delta = '', $edit = array()) {
     $taboola_blocks[$block_index]['subject'] = $edit['title'];
     $taboola_blocks[$block_index]['mode'] = $edit['taboola_mode'];
     $taboola_blocks[$block_index]['container'] = $edit['taboola_container'];
-    $taboola_blocks[$block_index]['type'] = $edit['taboola_target_type'];
+    $taboola_blocks[$block_index]['target_type'] = $edit['taboola_target_type'];
     $taboola_blocks[$block_index]['placement'] = $edit['taboola_placement'];
     variable_set('taboola_blocks', $taboola_blocks);
   }
