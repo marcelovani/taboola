@@ -41,7 +41,6 @@ function taboola_theme() {
     'taboola_container' => array(
       'variables' => array(
         'widget_class' => '',
-        'widget_type' => '',
         'widget_id' => '',
       ),
       'path' => drupal_get_path('module', 'taboola') . '/theme',
@@ -59,8 +58,6 @@ function taboola_help($path, $arg) {
       return t('<a href="@url">Taboola</a> is an analytics tool that provides links to other content either internally or from external sites.', array('@url' => 'http://www.taboola.com/'));
   }
 }
-
-
 
 /**
  * Implements hook_page_alter().
@@ -113,6 +110,7 @@ function taboola_page_alter(&$page) {
     }
   }
 }
+
 /**
  * Implements hook_block_info().
  */
@@ -133,67 +131,64 @@ function taboola_block_info() {
  * @param string $delta
  */
 function taboola_block_configure($delta = '') {
-  // This example comes from node.module.
   $form = array();
-  $taboola_blocks = variable_get('taboola_blocks',array());
 
-  for ($i = 0; $i < variable_get('taboola_block_count'); $i++) {
-
-    if($delta == 'taboola_block'.($i+1)){
-      $type = 'taboola_block'.($i+1);
-      // Type group.
-      $form[$type . '_group'] = array(
-        '#type' => 'fieldset',
-        '#title' => t('Taboola Settings'),
-        '#group' => 'vertical_tabs',
-      );
-      // Mode.
-      $form[$type . '_group']['taboola_mode_' . $type] = array(
-        '#type' => 'textfield',
-        '#title' => t('Mode'),
-        '#default_value' => taboola_get_block_setting($i, 'mode', $default = ''),
-        '#description' => '',
-      );
-      // Placement.
-      $form[$type . '_group']['taboola_placement_' . $type] = array(
-        '#type' => 'textfield',
-        '#title' => t('Placement'),
-        '#default_value' => taboola_get_block_setting($i, 'placement', $default = ''),
-        '#description' => '',
-      );
-      // Target Type.
-      $form[$type . '_group']['taboola_target_type_' . $type] = array(
-        '#type' => 'textfield',
-        '#title' => t('Target Type'),
-        '#default_value' => taboola_get_block_setting($i, 'type', $default = ''),
-        '#description' => '',
-      );
-      // Container.
-      $form[$type . '_group']['taboola_container_' . $type] = array(
-        '#type' => 'textfield',
-        '#title' => t('Container'),
-        '#default_value' => taboola_get_block_setting($i, 'container', $default = ''),
-        '#description' => '',
-      );
-    }
+  if (($block_index = taboola_get_block_array_index($delta)) !== FALSE) {
+    // Type group.
+    $form['taboola_group'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Taboola Settings'),
+      '#group' => 'vertical_tabs',
+    );
+    // Mode.
+    $form['taboola_group']['taboola_mode'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Mode'),
+      '#default_value' => taboola_get_block_setting($block_index, 'mode', $default = ''),
+      '#description' => '',
+    );
+    // Placement.
+    $form['taboola_group']['taboola_placement'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Placement'),
+      '#default_value' => taboola_get_block_setting($block_index, 'placement', $default = ''),
+      '#description' => '',
+    );
+    // Target Type.
+    $form['taboola_group']['taboola_target_type'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Target Type'),
+      '#default_value' => taboola_get_block_setting($block_index, 'type', $default = ''),
+      '#description' => '',
+    );
+    // Container.
+    $form['taboola_group']['taboola_container'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Container'),
+      '#default_value' => taboola_get_block_setting($block_index, 'container', $default = ''),
+      '#description' => '',
+    );
   }
+
   return $form;
 }
 
+/**
+ * Implements hook_block_save().
+ *
+ * @param string $delta
+ * @param array $edit
+ */
 function taboola_block_save($delta = '', $edit = array()) {
-
-  $taboola_blocks = variable_get('taboola_blocks',array());
-
-  for ($i = 0; $i < variable_get('taboola_block_count'); $i++) {
-    if($delta == 'taboola_block'.($i+1)){
-      $taboola_blocks[$i]['subject'] = $edit['title'];
-      $taboola_blocks[$i]['mode'] = $edit['taboola_mode_taboola_block'.($i+1)];
-      $taboola_blocks[$i]['container'] = $edit['taboola_container_taboola_block'.($i+1)];
-      $taboola_blocks[$i]['type'] = $edit['taboola_target_type_taboola_block'.($i+1)];
-      $taboola_blocks[$i]['placement'] = $edit['taboola_placement_taboola_block'.($i+1)];
-    }
+  if (($block_index = taboola_get_block_array_index($delta)) !== FALSE) {
+    $taboola_blocks = variable_get('taboola_blocks',array());
+    $taboola_blocks[$block_index]['subject'] = $edit['title'];
+    $taboola_blocks[$block_index]['mode'] = $edit['taboola_mode'];
+    $taboola_blocks[$block_index]['container'] = $edit['taboola_container'];
+    $taboola_blocks[$block_index]['type'] = $edit['taboola_target_type'];
+    $taboola_blocks[$block_index]['placement'] = $edit['taboola_placement'];
+    variable_set('taboola_blocks', $taboola_blocks);
   }
-  variable_set('taboola_blocks', $taboola_blocks);
 }
 
 /**
@@ -201,27 +196,45 @@ function taboola_block_save($delta = '', $edit = array()) {
  */
 function taboola_block_view($delta = '') {
   $block = array();
-  $number = str_replace("taboola_block","",$delta);
-  // We check if block delta is taboola_blockX being X a number.
-  if (substr_compare($delta, "taboola_block", 0, 13) == 0 && is_numeric($number)) {
-    $block_name = str_replace('taboola_', '', $delta);
-    $block = taboola_get_block_array($block, $block_name);
+  if (($block_index = taboola_get_block_array_index($delta)) !== FALSE) {
+    $block = taboola_get_block_array($block_index);
   }
   return $block;
 }
 
 /**
- * Create taboola block array.
+ * Helper to get block index.
+ *
+ * Note: this can return zero so always check that it's not === FALSE.
+ *
+ * @param string $delta
  */
-function taboola_get_block_array($block = array(), $type = 'block1') {
-  // Create block subject and content.
-  $block['subject'] = taboola_get_setting('taboola_block_subject_' . $type);
+function taboola_get_block_array_index($delta) {
+  // We check if block delta is taboola_blockX being X a number.
+  $number = str_replace('taboola_block', '', $delta);
+  if (substr_compare($delta, 'taboola_block', 0, 13) == 0 && is_numeric($number)) {
+    return (int) $number - 1;
+  }
+  return FALSE;
+}
+
+/**
+ * Create taboola block array.
+ *
+ * @param unknown $block_index
+ *   The array index of the block
+ */
+function taboola_get_block_array($block_index) {
   if (taboola_get_setting('taboola_enabled')) {
+    // Create block subject and content.
+    if ($subject = taboola_get_block_setting($block_index, 'subject')) {
+      $block['subject'] = $subject;
+    }
     $block['content'] = array(
       '#attached' => array(
-        'js' => taboola_get_attached_js($type),
+        'js' => taboola_get_attached_js($block_index),
       ),
-      '#widget_type' => $type,
+      '#widget_id' => taboola_get_block_setting($block_index, 'container'),
       '#theme' => 'taboola_container',
     );
   }
@@ -232,21 +245,16 @@ function taboola_get_block_array($block = array(), $type = 'block1') {
 }
 
 /**
- * Setup the widget container template.
- */
-function template_process_taboola_container(&$vars) {
-  // Set widget id.
-  $vars['widget_id'] = taboola_get_setting('taboola_container_' . $vars['widget_type']);
-}
-
-/**
  * Returns attached JS array.
+ *
+ * @param unknown $block_index
+ *   The array index of the block
  */
-function taboola_get_attached_js($type = 'default') {
+function taboola_get_attached_js($block_index) {
   // Create JS.
   $js = array();
   $js[] = "window._taboola = window._taboola || [];";
-  $js[] = taboola_get_widget_setting_js($type);
+  $js[] = taboola_get_widget_setting_js($block_index);
   return array(
     array(
       'data' => implode(PHP_EOL, $js),
@@ -260,24 +268,21 @@ function taboola_get_attached_js($type = 'default') {
 /**
  * Get widget setting JS.
  *
- * @param string $type
- *   The widget type.
- * @param string $container
- *   The widget container.
+ * @param unknown $block_index
+ *   The array index of the block
  */
-function taboola_get_widget_setting_js($type, $container = '') {
+function taboola_get_widget_setting_js($block_index) {
   // Get Taboola JS settings for this type.
-  $mode = taboola_get_setting('taboola_mode_' . $type);
-  $placement = taboola_get_setting('taboola_placement_' . $type);
+  $mode = taboola_get_block_setting($block_index, 'mode');
+  $placement = taboola_get_block_setting($block_index, 'placement');
+  $container = taboola_get_block_setting($block_index, 'container');
 
-  // Get container.
-  $container = taboola_get_setting('taboola_container_' . $type);
   // Get target type setting.
-  $target_type = taboola_get_setting('taboola_target_type_' . $type);
+  $target_type = taboola_get_block_setting($block_index, 'target_type');
   $target_type_json = !empty($target_type) ? ", target_type:'" . check_plain($target_type) . "'" : '';
 
   // Return setting JS.
-  return "_taboola.push({mode:'" . check_plain($mode) . "', container:'" . $container . "', placement:'" . check_plain($placement) . "'" . $target_type_json . "});";
+  return "_taboola.push({mode:'" . check_plain($mode) . "', container:'" . check_plain($container) . "', placement:'" . check_plain($placement) . "'" . $target_type_json . "});";
 }
 
 /**
