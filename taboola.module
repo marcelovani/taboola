@@ -117,16 +117,21 @@ function taboola_page_alter(&$page) {
  * Implements hook_block_info().
  */
 function taboola_block_info() {
-
-  foreach (taboola_get_widget_types() as $type){
-    $blocks['taboola_'.$type] = array(
-      'info' => t('Taboola '.ucwords($type)),
+  $blocks = array();
+  for ($i = 1; $i <= variable_get('taboola_block_count'); $i++) {
+    $blocks['taboola_block' . $i] = array(
+      'info' => t('Taboola Block ' . $i),
       'cache' => DRUPAL_CACHE_GLOBAL,
     );
   }
-
   return $blocks;
 }
+
+/**
+ * Implements hook_block_configure().
+ *
+ * @param string $delta
+ */
 function taboola_block_configure($delta = '') {
   // This example comes from node.module.
   $form = array();
@@ -287,20 +292,16 @@ function taboola_get_setting($key, $default = '') {
   return variable_get($key, $default);
 }
 
-function taboola_get_block_setting($block_index, $key, $default = '') {
-  //$taboola_blocks[$i]['placement'],
-  $taboola_blocks = variable_get('taboola_blocks');
-  return isset($taboola_blocks[$block_index]) ? $taboola_blocks[$block_index][$key] : null;
-}
 /**
- * Return array of widget types.
+ * Helper to get block settings.
+ *
+ * @param $block_index
+ * @param $key
+ * @param string $default
  */
-function taboola_get_widget_types() {
-  $types = array();
-  for ($i = 1; $i < variable_get('taboola_block_count') + 1; $i++) {
-    $types[] = ('block' . $i);
-  }
-  return $types;
+function taboola_get_block_setting($block_index, $key, $default = '') {
+  $taboola_blocks = variable_get('taboola_blocks');
+  return isset($taboola_blocks[$block_index][$key]) ? $taboola_blocks[$block_index][$key] : null;
 }
 
 /**

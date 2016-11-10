@@ -36,6 +36,8 @@ function taboola_admin_settings_form() {
     '#title' => t('Enabled'),
     '#default_value' => taboola_get_setting('taboola_enabled'),
   );
+
+  // Configure number of available blocks.
   $form['taboola_block_count'] = array(
     '#type' => 'select',
     '#title' => t('Number of blocks'),
@@ -44,14 +46,23 @@ function taboola_admin_settings_form() {
     '#description' => t('The number of taboola blocks.'),
   );
 
-  for ($i = 1; $i < variable_get('taboola_block_count')+1; $i++) {
-    $form['block_'.$i.'_settings'] = array(
-      '#type' => 'link',
-      '#title' => t('Block ' . $i . ' Settings'),
-      '#href' => '/admin/structure/block/manage/taboola/taboola_block' . $i . '/configure',
-      '#suffix' => '</br>',
+  // Output block configure links.
+  if (variable_get('taboola_block_count')) {
+    $form['block_links'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Configure Blocks'),
     );
+
+    for ($i = 1; $i <= variable_get('taboola_block_count'); $i++) {
+      $form['block_links']['block_'.$i.'_settings'] = array(
+        '#type' => 'link',
+        '#title' => t('Block ' . $i),
+        '#href' => '/admin/structure/block/manage/taboola/taboola_block' . $i . '/configure',
+        '#suffix' => '</br>',
+      );
+    }
   }
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
