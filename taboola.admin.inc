@@ -36,15 +36,15 @@ function taboola_admin_settings_form() {
     '#title' => t('Enabled'),
     '#default_value' => taboola_get_setting('taboola_enabled'),
   );
-  $form['taboola_count'] = array(
+  $form['taboola_block_count'] = array(
     '#type' => 'select',
     '#title' => t('Number of blocks'),
     '#options' => array_combine(range(1,30), range(1,30)),
-    '#default_value' => variable_get('taboola_count'),
+    '#default_value' => variable_get('taboola_block_count'),
     '#description' => t('The number of taboola blocks.'),
   );
 
-  for ($i = 1; $i < variable_get('taboola_count')+1; $i++) {
+  for ($i = 1; $i < variable_get('taboola_block_count')+1; $i++) {
     $form['block_'.$i.'_settings'] = array(
       '#type' => 'link',
       '#title' => t('Block ' . $i . ' Settings'),
@@ -65,12 +65,12 @@ function taboola_admin_settings_form() {
  * Saves Intellitxt settings into variables
  */
 function taboola_admin_settings_form_submit($form, &$form_state) {
-  $selected_taboola_count  = $form_state['input']['taboola_count'];
+  $selected_taboola_count  = $form_state['input']['taboola_block_count'];
   $taboola_blocks = variable_get('taboola_blocks');
 
   //resize of array
   array_splice($taboola_blocks, $selected_taboola_count);
-  variable_set('taboola_count',$selected_taboola_count);
+  variable_set('taboola_block_count',$selected_taboola_count);
   variable_set('taboola_blocks',$taboola_blocks);
 
 }

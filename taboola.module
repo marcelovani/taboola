@@ -132,14 +132,14 @@ function taboola_block_configure($delta = '') {
   $form = array();
   $taboola_blocks = variable_get('taboola_blocks',array());
 
-  for ($i = 0; $i < variable_get('taboola_count'); $i++) {
+  for ($i = 0; $i < variable_get('taboola_block_count'); $i++) {
 
     if($delta == 'taboola_block'.($i+1)){
       $type = 'taboola_block'.($i+1);
       // Type group.
       $form[$type . '_group'] = array(
         '#type' => 'fieldset',
-        '#title' => t('@type Settings', array('@type' => ucwords($type))),
+        '#title' => t('Taboola Settings'),
         '#group' => 'vertical_tabs',
       );
       // Mode.
@@ -179,7 +179,7 @@ function taboola_block_save($delta = '', $edit = array()) {
 
   $taboola_blocks = variable_get('taboola_blocks',array());
 
-  for ($i = 0; $i < variable_get('taboola_count'); $i++) {
+  for ($i = 0; $i < variable_get('taboola_block_count'); $i++) {
     if($delta == 'taboola_block'.($i+1)){
       $taboola_blocks[$i]['subject'] = $edit['title'];
       $taboola_blocks[$i]['mode'] = $edit['taboola_mode_taboola_block'.($i+1)];
@@ -297,7 +297,7 @@ function taboola_get_block_setting($block_index, $key, $default = '') {
  */
 function taboola_get_widget_types() {
   $types = array();
-  for ($i = 1; $i < variable_get('taboola_count') + 1; $i++) {
+  for ($i = 1; $i < variable_get('taboola_block_count') + 1; $i++) {
     $types[] = ('block' . $i);
   }
   return $types;
