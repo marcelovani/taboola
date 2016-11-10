@@ -55,6 +55,10 @@ function taboola_admin_settings_form() {
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
+    '#submit' => array(
+      'taboola_admin_settings_form_submit',
+      'system_settings_form_submit',
+    ),
   );
 
   return $form;
@@ -62,15 +66,13 @@ function taboola_admin_settings_form() {
 
 
 /**
- * Saves Intellitxt settings into variables
+ * Submit handler for Taboola settings.
  */
 function taboola_admin_settings_form_submit($form, &$form_state) {
-  $selected_taboola_count  = $form_state['input']['taboola_block_count'];
-  $taboola_blocks = variable_get('taboola_blocks');
+  $selected_taboola_count  = $form_state['values']['taboola_block_count'];
 
-  //resize of array
+  // Resize block array to new block count.
+  $taboola_blocks = variable_get('taboola_blocks', array());
   array_splice($taboola_blocks, $selected_taboola_count);
-  variable_set('taboola_block_count',$selected_taboola_count);
-  variable_set('taboola_blocks',$taboola_blocks);
-
+  variable_set('taboola_blocks', $taboola_blocks);
 }
