@@ -34,13 +34,17 @@ function taboola_dfp_native_context_plugins() {
   return $plugins;
 }
 
+
+
 /**
  * Implements hook_page_build().
  *
- * Loop through each available adslot, Get all needed settings
- * and add it to the JavaScript which will appended
+ * Get all needed settings and add it to the JavaScript which will appended
  * the rendered dfp tag in specified location.
  * All the visibility rules should be controlled by the context.
+ *
+ * @note: *We don't need multiple DFP support per page, so we'll break after
+ *    the first found.
  */
 function taboola_dfp_native_page_build(&$page) {
 
@@ -61,8 +65,8 @@ function taboola_dfp_native_page_build(&$page) {
           continue;
         }
 
-        // Explode selector CSV into array.
-        if (!empty($values['selector'])) {
+        //explode selector CSV into array
+        if(!empty($values['selector'])) {
           $values['selector'] = explode(PHP_EOL, $values['selector']);
         }
         // Add the loader_identifier to the page vars,
@@ -78,6 +82,9 @@ function taboola_dfp_native_page_build(&$page) {
           $taboola_dfp_native_tags[$machinename]['targeting'] = $tag->targeting;
           // Render the tag.
           $taboola_dfp_native_tags[$machinename]['renderedDfp'] = render($dfp_tag);
+
+          // *Break after the first found one.
+          break;
         }
       }
 
@@ -106,6 +113,10 @@ function _taboola_dfp_native_add_js($tags) {
   ), 'setting');
 
   $js = array();
+  // Add async support.
+  if (variable_get('dfp_async_rendering', 1)) {
+    $js[] = 'googletag.cmd.push(function() {';
+  }
   $js[] = 'googletag.pubads().addEventListener("slotRenderEnded", function(event) {';
   $js[] = ' try {';
 
@@ -140,14 +151,17 @@ function _taboola_dfp_native_add_js($tags) {
   $js[] = ' } catch (e) {';
   $js[] = ' }';
   $js[] = '});';
+  // End of googletag.pubads().addEventListener
+  if (variable_get('dfp_async_rendering', 1)) {
+    $js[] = '});';
+  }
 
-  // Hardcoded weight value (Before _dfp_js_global_settings()).
   drupal_add_js(implode(PHP_EOL, $js), array(
     'type' => 'inline',
     'group' => JS_DEFAULT,
     'every_page' => TRUE,
     'force header' => TRUE,
-    'weight' => 9,
+    'weight' => 9, // Hardcoded weigh value (Before _dfp_js_global_settings()).
   ));
 
   drupal_add_js(drupal_get_path('module', 'taboola_dfp_native') . '/js/taboola_dfp_native.js');
@@ -158,11 +172,8 @@ function _taboola_dfp_native_add_js($tags) {
  *
  * Clean up targeting keys and values.
  *
- * @param array $targeting
- *   Taboola DFP native targeting.
- *
+ * @param $targeting
  * @return array
- *   Array of prepared targeting.
  */
 function _taboola_dfp_native_prepare_targets($targeting) {
   $map = array(
