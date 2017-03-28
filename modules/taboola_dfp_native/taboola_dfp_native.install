@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * Contains taboola_dfp_native.install.
+ */
+
+/**
+ * Implements requirements().
+ */
+function taboola_dfp_native_requirements($phase) {
+  $requirements = array();
+  $t = get_t();
+
+  $requirements['taboola_dfp_native'] = array(
+    'title' => $t('[ERROR] taboola_dfp_native is deprecated.'),
+    'value' => $t('This module should be replaced with https://www.drupal.org/project/dfp_native and all contexts and hooks need to be migrated accordingly.'),
+    'severity' => REQUIREMENT_ERROR,
+  );
+
+  return $requirements;
+}
