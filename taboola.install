@@ -1,0 +1,33 @@
+<?php
+/**
+ * @file
+ * Taboola updates.
+ */
+
+/**
+ * Convert to new array storage.
+ */
+function taboola_update_7100() {
+  // Build array of blocks and delete old variables.
+  $blocks = array();
+  for ($i = 1; $i <= 4; $i++) {
+    $block = array();
+    foreach (array('container', 'mode', 'placement', 'target_type') as $property) {
+      $variable = 'taboola_' . $property . '_block' . $i;
+      if ($value = variable_get($variable)) {
+        $block[$property] = $value;
+        // Delete old variable.
+        variable_del($variable);
+      }
+    }
+    // Add to block array if it has properties.
+    if (!empty($block)) {
+      $blocks[] = $block;
+    }
+  }
+  // Set block array and count if it's not already been set by another module.
+  if (!variable_get('taboola_blocks', FALSE)) {
+    variable_set('taboola_blocks', $blocks);
+    variable_set('taboola_block_count', count($blocks));
+  }
+}
