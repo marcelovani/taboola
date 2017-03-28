@@ -1,0 +1,5 @@
+name = AMP Taboola
+description = Helps render Taboola blocks as AMP elements
+core = 7.x
+dependencies[] = amp
+dependencies[] = taboola
