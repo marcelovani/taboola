@@ -4,6 +4,17 @@
  * Taboola updates.
  */
 
+
+/**
+ * Implements hook_uninstall().
+ */
+function taboola_uninstall() {
+  variable_del('taboola_blocks');
+  variable_del('taboola_block_count');
+  variable_del('taboola_enabled');
+  variable_del('taboola_service_path');
+}
+
 /**
  * Convert to new array storage.
  */
