@@ -13,3 +13,9 @@ function taboola_amp_form_taboola_admin_settings_form_alter(&$form, &$form_state
     '#type' => 'fieldset',
     '#weight' => 2,
   );
+  $form['taboola_amp']['taboola_data_publisher'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Data publisher'),
+    '#default_value' => taboola_get_setting('taboola_data_publisher'),
+  );
+}
