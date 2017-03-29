@@ -9,6 +9,7 @@
  * Implements hook_uninstall().
  */
 function taboola_uninstall() {
+  variable_del('taboola_publisher');
   variable_del('taboola_blocks');
   variable_del('taboola_block_count');
   variable_del('taboola_enabled');

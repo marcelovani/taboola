@@ -168,6 +168,9 @@ function taboola_block_configure($delta = '') {
       '#default_value' => taboola_get_block_setting($block_index, 'container', $default = ''),
       '#description' => '',
     );
+
+    // Allow other modules to alter the form.
+    drupal_alter('taboola_block_config', $form, $delta);
   }
 
   return $form;
@@ -187,6 +190,12 @@ function taboola_block_save($delta = '', $edit = array()) {
     $taboola_blocks[$block_index]['container'] = $edit['taboola_container'];
     $taboola_blocks[$block_index]['target_type'] = $edit['taboola_target_type'];
     $taboola_blocks[$block_index]['placement'] = $edit['taboola_placement'];
+
+    // Allow other modules to change block configs before saving.
+    $block_config = &$taboola_blocks[$block_index];
+    $form_values = $edit;
+    drupal_alter('taboola_block_save', $block_config, $form_values);
+
     variable_set('taboola_blocks', $taboola_blocks);
   }
 }

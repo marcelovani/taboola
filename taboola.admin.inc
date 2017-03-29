@@ -21,6 +21,14 @@ function taboola_admin_settings_form() {
     '#default_value' => taboola_get_setting('taboola_enabled'),
   );
 
+  // Publisher.
+  $form['taboola_publisher'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Publisher ID'),
+    '#default_value' => taboola_get_setting('taboola_publisher'),
+    '#description' => '',
+  );
+
   // Service path.
   $form['taboola_service_path'] = array(
     '#type' => 'textfield',

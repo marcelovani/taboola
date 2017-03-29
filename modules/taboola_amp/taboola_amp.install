@@ -8,5 +8,5 @@
  * Implements hook_uninstall().
  */
 function taboola_amp_uninstall() {
-  variable_del('taboola_data_publisher');
+  variable_del('taboola_publisher');
 }
