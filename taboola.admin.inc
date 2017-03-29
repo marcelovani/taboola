@@ -14,6 +14,13 @@
  */
 function taboola_admin_settings_form() {
   $form = array();
+  // Global enabled flag.
+  $form['taboola_enabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enabled'),
+    '#default_value' => taboola_get_setting('taboola_enabled'),
+  );
+
   // Service path.
   $form['taboola_service_path'] = array(
     '#type' => 'textfield',
@@ -28,13 +35,6 @@ function taboola_admin_settings_form() {
     '#title' => t('Taboola-X Service Path'),
     '#default_value' => taboola_get_setting('taboola_x_service_path'),
     '#description' => '',
-  );
-
-  // Global enabled flag.
-  $form['taboola_enabled'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Enabled'),
-    '#default_value' => taboola_get_setting('taboola_enabled'),
   );
 
   // Configure number of available blocks.
@@ -69,6 +69,7 @@ function taboola_admin_settings_form() {
       'taboola_admin_settings_form_submit',
       'system_settings_form_submit',
     ),
+    '#weight' => 10,
   );
 
   return $form;
