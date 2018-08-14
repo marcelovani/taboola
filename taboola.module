@@ -77,9 +77,10 @@ function taboola_page_alter(&$page) {
     // Add inline header JS.
     $js = array(
       "window._taboola = window._taboola || [];",
-      "_taboola.push({" . $loader_identifier . ":'auto'});",
-      "!function (e, f, u) { e.async = 1; e.src = u; f.parentNode.insertBefore(e, f);}",
-      "(document.createElement('script'), document.getElementsByTagName('script')[0], '$service_path');",
+      "_taboola.push({" . drupal_json_encode($loader_identifier) . ":'auto'});",
+      "!function (e, f, u, i) {if (!document.getElementById(i)){e.async = 1;e.src = u;e.id = i;f.parentNode.insertBefore(e, f);}}",
+      "(document.createElement('script'), document.getElementsByTagName('script')[0], ".drupal_json_encode($service_path).", 'tb_loader_script');",
+      "if(window.performance && typeof window.performance.mark == 'function'){window.performance.mark('tbl_ic');}",
     );
 
     drupal_add_js(implode(PHP_EOL, $js), array(
@@ -288,10 +289,16 @@ function taboola_get_widget_setting_js($block_index) {
 
   // Get target type setting.
   $target_type = taboola_get_block_setting($block_index, 'target_type');
-  $target_type_json = !empty($target_type) ? ", target_type:'" . check_plain($target_type) . "'" : '';
+
+  $widget_settings = array();
+  $widget_settings['mode'] = $mode;
+  $widget_settings['container'] = $container;
+  $widget_settings['placement'] = $placement;
+  $widget_settings['target_type'] = !empty($target_type) ?  $target_type : '';
+  $widget_settings_json = drupal_json_encode($widget_settings);
 
   // Return setting JS.
-  return "_taboola.push({mode:'" . check_plain($mode) . "', container:'" . check_plain($container) . "', placement:'" . check_plain($placement) . "'" . $target_type_json . "});";
+  return "_taboola.push( $widget_settings_json );";
 }
 
 /**
